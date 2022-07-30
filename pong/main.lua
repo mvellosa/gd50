@@ -30,44 +30,53 @@ function love.load()
 	gameBall = Ball(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4, 4, {1,1,1,1})
 	player1 = Paddle(5, VIRTUAL_HEIGHT / 2 - paddleHeight/2, paddleWidth, paddleHeight, {125/255, 206/255, 19/255, 1})
 	player2 = Paddle(VIRTUAL_WIDTH - paddleWidth - 5, VIRTUAL_HEIGHT / 2 - paddleHeight/2, paddleWidth, paddleHeight, {235/255, 29/255, 54/255, 1})
+
+	gameState = 'newGame'
 end
 
 function love.update(dt)
 
-	if love.keyboard.isDown('s') then
-		player1:goDown(dt)
+	if gameState == 'playing' then
+		
+		if love.keyboard.isDown('s') then
+			player1:goDown(dt)
+		end
+		if love.keyboard.isDown('w') then
+			player1:goUp(dt)
+		end
+	
+		if love.keyboard.isDown('down') then
+			player2:goDown(dt)
+		end
+		if love.keyboard.isDown('up') then
+			player2:goUp(dt)
+		end
+	
+		if collides(gameBall, player1) then
+			gameBall:redirectX(player1.x + player1.width)
+		elseif collides(gameBall, player2) then
+			gameBall:redirectX(player2.x - gameBall.width)
+		end
+	
+		if gameBall.y < 0 then
+			gameBall:redirectY()
+		elseif gameBall.y > VIRTUAL_HEIGHT - gameBall.height then
+			gameBall:redirectY()
+		end
+	
+		gameBall:update(dt)
 	end
-	if love.keyboard.isDown('w') then
-		player1:goUp(dt)
-	end
-
-	if love.keyboard.isDown('down') then
-		player2:goDown(dt)
-	end
-	if love.keyboard.isDown('up') then
-		player2:goUp(dt)
-	end
-
-	if collides(gameBall, player1) then
-		gameBall:redirectX(player1.x + player1.width)
-	elseif collides(gameBall, player2) then
-		gameBall:redirectX(player2.x - gameBall.width)
-	end
-
-	if gameBall.y < 0 then
-		gameBall:redirectY()
-	elseif gameBall.y > VIRTUAL_HEIGHT - gameBall.height then
-		gameBall:redirectY()
-	end
-
-	gameBall:update(dt)
 end
 
 function love.draw()
 	push:apply('start')
-
+	
 	local bg = {55/255, 55/255, 68/255, 1}
 	love.graphics.clear(bg)
+	
+	if gameState == 'newGame' then
+		love.graphics.printf("PRESS ENTER TO START", 0, 0, VIRTUAL_WIDTH, 'center')
+	end
 
 	love.graphics.setFont(Smallfont)
 	love.graphics.printf(tostring(love.timer.getFPS()), 5, 5, VIRTUAL_WIDTH)
@@ -81,10 +90,16 @@ function love.draw()
 end
 
 function love.keypressed(key)
-	if key == 'enter' or key == 'return' then
-		gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
-	elseif key == 'escape' then
-		love.event.quit()
+	if gameState == 'newGame'then
+		if key == 'enter' or key == 'return' then
+			gameState = 'playing'
+		end
+	elseif gameState == 'playing' then
+		if key == 'enter' or key == 'return' then
+			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
+		elseif key == 'escape' then
+			love.event.quit()
+		end
 	end
 end
 
