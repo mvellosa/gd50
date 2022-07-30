@@ -16,6 +16,7 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
 	Smallfont = love.graphics.newFont('font.ttf', 8)
+	Bigfont = love.graphics.newFont('font.ttf', 16)
 
 	-- create window
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -32,12 +33,12 @@ function love.load()
 	player2 = Paddle(VIRTUAL_WIDTH - paddleWidth - 5, VIRTUAL_HEIGHT / 2 - paddleHeight/2, paddleWidth, paddleHeight, {235/255, 29/255, 54/255, 1})
 
 	gameState = 'newGame'
+	scores = {p1=0, p2=0}
 end
 
 function love.update(dt)
 
 	if gameState == 'playing' then
-		
 		if love.keyboard.isDown('s') then
 			player1:goDown(dt)
 		end
@@ -63,6 +64,14 @@ function love.update(dt)
 		elseif gameBall.y > VIRTUAL_HEIGHT - gameBall.height then
 			gameBall:redirectY()
 		end
+
+		if gameBall.x + gameBall.width < 0 then
+			scores.p2 = scores.p2 + 1
+			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
+		elseif gameBall.x > VIRTUAL_WIDTH then
+			scores.p1 = scores.p1 + 1
+			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
+		end
 	
 		gameBall:update(dt)
 	end
@@ -74,10 +83,14 @@ function love.draw()
 	local bg = {55/255, 55/255, 68/255, 1}
 	love.graphics.clear(bg)
 	
+	love.graphics.setFont(Bigfont)
 	if gameState == 'newGame' then
 		love.graphics.printf("PRESS ENTER TO START", 0, 0, VIRTUAL_WIDTH, 'center')
+	elseif gameState == 'playing' then
+		love.graphics.printf(tostring(scores.p1), VIRTUAL_WIDTH / 2 - 20, 30, VIRTUAL_WIDTH, "left")
+		love.graphics.printf(tostring(scores.p2), VIRTUAL_WIDTH / 2 + 15, 30, VIRTUAL_WIDTH, "left")
 	end
-
+	
 	love.graphics.setFont(Smallfont)
 	love.graphics.printf(tostring(love.timer.getFPS()), 5, 5, VIRTUAL_WIDTH)
 
