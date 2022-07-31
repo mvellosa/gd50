@@ -32,7 +32,9 @@ function love.load()
 	player1 = Paddle(5, VIRTUAL_HEIGHT / 2 - paddleHeight/2, paddleWidth, paddleHeight, {125/255, 206/255, 19/255, 1})
 	player2 = Paddle(VIRTUAL_WIDTH - paddleWidth - 5, VIRTUAL_HEIGHT / 2 - paddleHeight/2, paddleWidth, paddleHeight, {235/255, 29/255, 54/255, 1})
 
+	pointsToWin = 5
 	gameState = 'newGame'
+	winner = 0
 	scores = {p1=0, p2=0}
 end
 
@@ -68,9 +70,20 @@ function love.update(dt)
 		if gameBall.x + gameBall.width < 0 then
 			scores.p2 = scores.p2 + 1
 			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
+
+			if scores.p2 >= pointsToWin then
+				gameState = 'endGame'
+				winner = 2
+			end
+
 		elseif gameBall.x > VIRTUAL_WIDTH then
 			scores.p1 = scores.p1 + 1
 			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
+
+			if scores.p1 >= pointsToWin then
+				gameState = 'endGame'
+				winner = 1
+			end
 		end
 	
 		gameBall:update(dt)
@@ -89,6 +102,9 @@ function love.draw()
 	elseif gameState == 'playing' then
 		love.graphics.printf(tostring(scores.p1), VIRTUAL_WIDTH / 2 - 20, 30, VIRTUAL_WIDTH, "left")
 		love.graphics.printf(tostring(scores.p2), VIRTUAL_WIDTH / 2 + 15, 30, VIRTUAL_WIDTH, "left")
+	elseif gameState == 'endGame' then
+		love.graphics.printf('GAME OVER', 0, 50, VIRTUAL_WIDTH, 'center')
+		love.graphics.printf('PLAYER '.. tostring(winner) .. ' WINS', 0, 75, VIRTUAL_WIDTH, 'center')
 	end
 	
 	love.graphics.setFont(Smallfont)
@@ -112,6 +128,12 @@ function love.keypressed(key)
 			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
 		elseif key == 'escape' then
 			love.event.quit()
+		end
+	elseif gameState == 'endGame' then
+		if key == 'enter' or key == 'return' then
+			scores.p1 = 0
+			scores.p2 = 0
+			gameState = 'playing'
 		end
 	end
 end
