@@ -117,15 +117,12 @@ function love.draw()
 end
 
 function love.keypressed(key)
+	if key == 'escape' then
+		love.event.quit()
+	end
 	if gameState == 'newGame'then
 		if key == 'enter' or key == 'return' then
 			gameState = 'playing'
-		end
-	elseif gameState == 'playing' then
-		if key == 'enter' or key == 'return' then
-			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
-		elseif key == 'escape' then
-			love.event.quit()
 		end
 	elseif gameState == 'endGame' then
 		if key == 'enter' or key == 'return' then
