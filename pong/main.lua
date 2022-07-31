@@ -32,6 +32,12 @@ function love.load()
 	player1 = Paddle(5, VIRTUAL_HEIGHT / 2 - paddleHeight/2, paddleWidth, paddleHeight, {125/255, 206/255, 19/255, 1})
 	player2 = Paddle(VIRTUAL_WIDTH - paddleWidth - 5, VIRTUAL_HEIGHT / 2 - paddleHeight/2, paddleWidth, paddleHeight, {235/255, 29/255, 54/255, 1})
 
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static')
+    }
+
 	pointsToWin = 5
 	gameState = 'newGame'
 	winner = 0
@@ -56,17 +62,22 @@ function love.update(dt)
 	
 		if collides(gameBall, player1) then
 			gameBall:redirectX(player1.x + player1.width)
+			sounds['paddle_hit']:play()
 		elseif collides(gameBall, player2) then
 			gameBall:redirectX(player2.x - gameBall.width)
+			sounds['paddle_hit']:play()
 		end
 	
 		if gameBall.y < 0 then
 			gameBall:redirectY()
+			sounds['wall_hit']:play()
 		elseif gameBall.y > VIRTUAL_HEIGHT - gameBall.height then
 			gameBall:redirectY()
+			sounds['wall_hit']:play()
 		end
 
 		if gameBall.x + gameBall.width < 0 then
+			sounds['score']:play()
 			scores.p2 = scores.p2 + 1
 			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
 
@@ -76,6 +87,7 @@ function love.update(dt)
 			end
 
 		elseif gameBall.x > VIRTUAL_WIDTH then
+			sounds['score']:play()
 			scores.p1 = scores.p1 + 1
 			gameBall:reset(VIRTUAL_WIDTH/2 - 4, VIRTUAL_HEIGHT/2 - 4)
 
