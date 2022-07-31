@@ -69,10 +69,10 @@ function love.update(dt)
 		end
 	
 		if gameBall.y < 0 then
-			gameBall:redirectY()
+			gameBall:redirectY(0)
 			sounds['wall_hit']:play()
 		elseif gameBall.y > VIRTUAL_HEIGHT - gameBall.height then
-			gameBall:redirectY()
+			gameBall:redirectY(VIRTUAL_HEIGHT - gameBall.height)
 			sounds['wall_hit']:play()
 		end
 
