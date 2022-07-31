@@ -39,7 +39,6 @@ function love.load()
 end
 
 function love.update(dt)
-
 	if gameState == 'playing' then
 		if love.keyboard.isDown('s') then
 			player1:goDown(dt)
@@ -109,7 +108,6 @@ function love.draw()
 	
 	love.graphics.setFont(Smallfont)
 	love.graphics.printf(tostring(love.timer.getFPS()), 5, 5, VIRTUAL_WIDTH)
-
 
 	gameBall:render()
 	player1:render()
