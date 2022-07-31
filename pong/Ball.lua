@@ -4,8 +4,8 @@ function Ball:init(x, y, size, color)
     self.x = x
     self.y = y
 
-    self.dx = math.random(2) == 1 and 100 or -100
-    self.dy = math.random(2) == 1 and math.random(50, 150) or math.random(-50, -150)
+    self.dx = math.random(2) == 1 and 150 or -150
+    self.dy = math.random(2) == 1 and math.random(50, 100) or math.random(-50, -100)
 
     self.width = size
     self.height = size
@@ -16,7 +16,7 @@ function Ball:reset(x, y)
     self.x = x
     self.y = y
 
-    self.dx = math.random(2) == 1 and 100 or -100
+    self.dx = math.random(2) == 1 and 150 or -150
     self.dy = math.random(2) == 1 and math.random(50, 100) or math.random(-50, -100)
 end
 
@@ -32,6 +32,7 @@ function Ball:redirectX(newX)
 end
 
 function Ball:redirectY(newY)
+    self.y = newY
     self.dy = - self.dy
 end
 
