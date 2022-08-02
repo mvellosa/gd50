@@ -9,8 +9,6 @@ VIRTUAL_WIDTH = 512
 VIRTUAL_HEIGHT = 288
 
 local background = love.graphics.newImage('background.png')
-
-
 local ground = love.graphics.newImage('ground.png')
 
 local bgCurrStart = 0
