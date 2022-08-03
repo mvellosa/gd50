@@ -20,17 +20,19 @@ local groundloopLocation = VIRTUAL_WIDTH
 local bgSpeed = 50
 local groundSpeed = 100
 
-GRAVITY = 10
+GRAVITY = 11
 
 function love.load() 
     love.graphics.setDefaultFilter('nearest', 'nearest')
+
+    love.window.setTitle('THE BIRD')
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         resizable = true,
         vsync = true
     })
-    player = Bird(30, 20, 30, 30, love.graphics.newImage('bird.png'))
+    player = Bird(50, 20, 30, 30, love.graphics.newImage('bird.png'))
 end
 
 function love.resize(w, h)

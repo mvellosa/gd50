@@ -27,7 +27,7 @@ function Bird:update(dt)
 end
 
 function Bird:render()
-    love.graphics.draw(self.image, self.x, self.y, self.currRotation)
+    love.graphics.draw(self.image, self.x, self.y, self.currRotation, 1, 1, self.width/2, self.height/2)
 end
 
 function mapValue(input, input_start, input_end, output_start, output_end)
