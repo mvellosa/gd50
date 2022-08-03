@@ -17,7 +17,7 @@ end
 
 function Bird:jump()
     self.dy = math.max(math.min(self.dy - self.jumpForce, -150), -250)
-    self.currRotation = - math.pi / 4
+    self.currRotation = math.min(mapValue(self.dy, -250, 200, -math.pi / 4, math.pi / 2), math.pi / 2)
 end
 
 function Bird:update(dt)
@@ -28,4 +28,9 @@ end
 
 function Bird:render()
     love.graphics.draw(self.image, self.x, self.y, self.currRotation)
+end
+
+function mapValue(input, input_start, input_end, output_start, output_end)
+    local slope = (input - input_start) / (input_end - input_start)
+    return slope * (output_end - output_start) + output_start
 end
