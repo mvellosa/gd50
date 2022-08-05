@@ -1,15 +1,21 @@
 Pipe = Class{}
 
-function Pipe:init(x, height, gap, dx, image)
+
+PIPE_IMAGE = love.graphics.newImage('pipe.png')
+PIPE_GAP = 110
+PIPE_SCROLL_SPEED = 100
+
+function Pipe:init(x)
     self.x = x
 
-    self.height = height
+    self.height = math.random(30, VIRTUAL_HEIGHT - PIPE_GAP - 50)
+    self.width = PIPE_IMAGE:getWidth()
 
-    self.gap = gap
+    self.gap = PIPE_GAP
 
-    self.dx = dx
+    self.dx = PIPE_SCROLL_SPEED
 
-    self.image = image
+    self.image = PIPE_IMAGE
 end
 
 function Pipe:update(dt)
@@ -17,6 +23,6 @@ function Pipe:update(dt)
 end
 
 function Pipe:render()
-    love.graphics.draw(self.image, self.x, 0, math.pi, 1, 1, self.image:getWidth(), self.height)
+    love.graphics.draw(self.image, self.x, 0, math.pi, 1, 1, self.width, self.height)
     love.graphics.draw(self.image, self.x, self.height + self.gap)
 end

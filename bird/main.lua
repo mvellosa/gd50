@@ -23,7 +23,8 @@ local groundSpeed = 100
 
 GRAVITY = 11
 
-PIPE_GAP = 110
+PIPE_SPAWN_TIMER = 0
+PIPE_SPAWN_COOLDOWN = 2
 
 function love.load() 
     love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -36,9 +37,10 @@ function love.load()
         vsync = true
     })
     player = Bird(50, 20, 30, 30, love.graphics.newImage('bird.png'))
-    p = Pipe(VIRTUAL_WIDTH/2, 150, PIPE_GAP, 50, love.graphics.newImage('pipe.png'))
+    
+    local currX = VIRTUAL_WIDTH/2
+    pipes = {}
 end
-
 function love.resize(w, h)
     push:resize(w, h)
 end
@@ -47,18 +49,37 @@ function love.update(dt)
     bgCurrStart = (bgCurrStart + bgSpeed * dt) % bgloopLocation
     groundCurrStart = (groundCurrStart + groundSpeed * dt) % groundloopLocation
 
-    p:update(dt)
+    PIPE_SPAWN_TIMER = PIPE_SPAWN_TIMER + dt
+
+    if PIPE_SPAWN_TIMER > PIPE_SPAWN_COOLDOWN then
+        table.insert(pipes, Pipe(VIRTUAL_WIDTH + 10))
+        PIPE_SPAWN_TIMER = 0
+    end
+
     player:update(dt)
+
+    for k, pipe in pairs(pipes)do
+        pipe:update(dt)
+        if pipe.x < -pipe.width then
+            table.remove(pipes, k)
+        end
+    end
 end
 
 function love.draw()
     push:start()
 
     love.graphics.draw(background, -bgCurrStart, 0)
+    
+    for k, pipe in pairs(pipes)do
+        pipe:render()
+    end
+
     love.graphics.draw(ground, -groundCurrStart, VIRTUAL_HEIGHT - 16)
 
     player:render()
-    p:render()
+    
+
     push:finish()
 end
 
