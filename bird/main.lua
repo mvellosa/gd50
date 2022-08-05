@@ -1,6 +1,7 @@
 push = require 'push'
 Class = require 'class'
 require 'Bird'
+require 'Pipe'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -22,6 +23,8 @@ local groundSpeed = 100
 
 GRAVITY = 11
 
+PIPE_GAP = 110
+
 function love.load() 
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
@@ -33,6 +36,7 @@ function love.load()
         vsync = true
     })
     player = Bird(50, 20, 30, 30, love.graphics.newImage('bird.png'))
+    p = Pipe(VIRTUAL_WIDTH/2, 150, PIPE_GAP, 50, love.graphics.newImage('pipe.png'))
 end
 
 function love.resize(w, h)
@@ -43,6 +47,7 @@ function love.update(dt)
     bgCurrStart = (bgCurrStart + bgSpeed * dt) % bgloopLocation
     groundCurrStart = (groundCurrStart + groundSpeed * dt) % groundloopLocation
 
+    p:update(dt)
     player:update(dt)
 end
 
@@ -53,6 +58,7 @@ function love.draw()
     love.graphics.draw(ground, -groundCurrStart, VIRTUAL_HEIGHT - 16)
 
     player:render()
+    p:render()
     push:finish()
 end
 
