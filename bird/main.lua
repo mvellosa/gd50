@@ -38,9 +38,14 @@ function love.load()
     })
     player = Bird(50, 20, 30, 30, love.graphics.newImage('bird.png'))
     
-    local currX = VIRTUAL_WIDTH/2
+    sounds = {
+        ['jump'] = love.audio.newSource('sounds/jump.wav', "static"),
+        ['score'] = love.audio.newSource('sounds/score.wav', "static"),
+        ['hurt'] = love.audio.newSource('sounds/hurt.wav', "static")
+    }
     pipes = {}
 end
+
 function love.resize(w, h)
     push:resize(w, h)
 end
@@ -87,6 +92,7 @@ function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
     elseif key == 'space' then
-        player:jump() 
+        player:jump()
     end
 end
+

@@ -18,6 +18,7 @@ end
 function Bird:jump()
     self.dy = math.max(math.min(self.dy - self.jumpForce, -150), -250)
     self.currRotation = math.min(mapValue(self.dy, -250, 200, -math.pi / 4, math.pi / 2), math.pi / 2)
+    sounds['jump']:play()
 end
 
 function Bird:update(dt)
