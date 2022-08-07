@@ -60,10 +60,19 @@ function love.update(dt)
         table.insert(pipes, Pipe(VIRTUAL_WIDTH + 10))
         PIPE_SPAWN_TIMER = 0
     end
+    
+    for k, pipe in pairs(pipes) do
+        local upper = pipe:getUpper()
+        local lower = pipe:getLower()
+
+        if collides(player, pipe:getUpper()) or collides(player, pipe:getLower())then
+            sounds['hurt']:play()
+        end
+    end
 
     player:update(dt)
 
-    for k, pipe in pairs(pipes)do
+    for k, pipe in pairs(pipes) do
         pipe:update(dt)
         if pipe.x < -pipe.width then
             table.remove(pipes, k)
@@ -75,15 +84,14 @@ function love.draw()
     push:start()
 
     love.graphics.draw(background, -bgCurrStart, 0)
-    
-    for k, pipe in pairs(pipes)do
+
+    for k, pipe in pairs(pipes) do
         pipe:render()
     end
 
     love.graphics.draw(ground, -groundCurrStart, VIRTUAL_HEIGHT - 16)
 
     player:render()
-    
 
     push:finish()
 end
@@ -96,3 +104,14 @@ function love.keypressed(key)
     end
 end
 
+function collides(a, b)	
+	if a.x > b.x + b.width or a.x + a.width < b.x then
+		return false
+	end
+
+	if a.y > b.y + b.height or a.y + a.height < b.y then
+		return false
+	end
+
+	return true
+end

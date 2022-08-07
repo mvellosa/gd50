@@ -18,6 +18,15 @@ function Pipe:init(x)
     self.image = PIPE_IMAGE
 end
 
+function Pipe:getUpper()
+    return {x = self.x, width = self.width, y = 0, height = self.height}
+end
+
+function Pipe:getLower()
+    local yOff = self.height + self.gap
+    return {x = self.x, width = self.width, y = yOff, height = VIRTUAL_HEIGHT - yOff}
+end
+
 function Pipe:update(dt)
     self.x = self.x - self.dx * dt
 end
