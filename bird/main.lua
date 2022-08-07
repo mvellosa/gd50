@@ -26,6 +26,11 @@ GRAVITY = 11
 PIPE_SPAWN_TIMER = 0
 PIPE_SPAWN_COOLDOWN = 2
 
+COIN_PICKUP_TIMER = 0
+COIN_PICKUP_COOLDOWN = PIPE_SPAWN_COOLDOWN/2
+
+defaultFont = love.graphics.newFont('font.ttf', 24)
+
 function love.load() 
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
@@ -37,13 +42,16 @@ function love.load()
         vsync = true
     })
     player = Bird(50, 20, 30, 30, love.graphics.newImage('bird.png'))
-    
+
     sounds = {
         ['jump'] = love.audio.newSource('sounds/jump.wav', "static"),
         ['score'] = love.audio.newSource('sounds/score.wav', "static"),
         ['hurt'] = love.audio.newSource('sounds/hurt.wav', "static")
     }
+
     pipes = {}
+
+    score = 0
 end
 
 function love.resize(w, h)
@@ -55,18 +63,22 @@ function love.update(dt)
     groundCurrStart = (groundCurrStart + groundSpeed * dt) % groundloopLocation
 
     PIPE_SPAWN_TIMER = PIPE_SPAWN_TIMER + dt
+    COIN_PICKUP_TIMER = COIN_PICKUP_TIMER + dt
 
     if PIPE_SPAWN_TIMER > PIPE_SPAWN_COOLDOWN then
         table.insert(pipes, Pipe(VIRTUAL_WIDTH + 10))
         PIPE_SPAWN_TIMER = 0
     end
-    
-    for k, pipe in pairs(pipes) do
-        local upper = pipe:getUpper()
-        local lower = pipe:getLower()
 
-        if collides(player, pipe:getUpper()) or collides(player, pipe:getLower())then
+    for k, pipe in pairs(pipes) do
+        local upperPipe = pipe:getUpper()
+
+        if collides(player, upperPipe) or collides(player, pipe:getLower())then
             sounds['hurt']:play()
+        end
+        if COIN_PICKUP_TIMER > COIN_PICKUP_COOLDOWN and player.x > upperPipe.x + upperPipe.width / 2 and player.x < upperPipe.x + upperPipe.width then
+            score = score + 1
+            COIN_PICKUP_TIMER = 0
         end
     end
 
@@ -92,6 +104,9 @@ function love.draw()
     love.graphics.draw(ground, -groundCurrStart, VIRTUAL_HEIGHT - 16)
 
     player:render()
+
+    love.graphics.setFont(defaultFont)
+    love.graphics.printf(score, 0, 30, VIRTUAL_WIDTH, "center")
 
     push:finish()
 end

@@ -2,7 +2,7 @@ Pipe = Class{}
 
 
 PIPE_IMAGE = love.graphics.newImage('pipe.png')
-PIPE_GAP = 110
+PIPE_GAP = 95
 PIPE_SCROLL_SPEED = 100
 
 function Pipe:init(x)
